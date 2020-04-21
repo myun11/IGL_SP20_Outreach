@@ -358,3 +358,52 @@ ggplot(expand.grid(X=x, Y=y),
 
 ######################### values
 
+roll_move = c(2,3,4,5,6,7,8,9,10,11,12)
+roll_count = c(1,2,3,4,5,6,5,4,3,2,1)
+roll_hist = c(2,3,4,5,6,7,
+              3,4,5,6,7,8,
+              4,5,6,7,8,9,
+              5,6,7,8,9,10,
+              6,7,8,9,10,11,
+              7,8,9,10,11,12)
+roll_x = roll_count/36
+roll = data.frame(x = roll_x, y = roll_hist)
+library(tidyverse)
+library(ggplot2)
+ggplot(roll, aes(roll$y)) +
+  geom_histogram()
+
+qplot(roll$y, geom = "histogram",
+      binwidth = 1,
+      main = "Outcomes For Two Dice Rolls", 
+      xlab = "Total Roll",
+      ylab = "Outcomes",
+      fill=I("blue"), 
+      col=I("red"), 
+      alpha=I(.2),
+      xlim=c(1,13)
+) + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+roll2 = data.frame(x = roll_x, y = roll_hist/36)
+qplot(roll$y, geom = "histogram",
+      binwidth = 1,
+      main = "Probability Of Outcomes For Two Dice Rolls", 
+      xlab = "Total Roll",
+      ylab = "Probability",
+      fill=I("blue"), 
+      col=I("red"), 
+      alpha=I(.2),
+      xlim=c(1,13)
+) + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(roll, aes(y)) +
+  geom_histogram(aes(y = ..density..), binwidth=1) +
+  geom_density(fill="red", alpha = 0.2) +
+  theme_bw() +
+  xlab('Total Roll') +
+  ylab('Probability') +
+  ggtitle('Probabilities of Total Rolls') +
+  theme(plot.title = element_text(hjust = 0.5))
+
