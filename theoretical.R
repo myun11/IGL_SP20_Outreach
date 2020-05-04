@@ -236,8 +236,8 @@ axis(2, 1:nrow(Q_final), rownames(Q_final))
 
 
 temp = diag(44)
-for (i in 1:1) {
-  temp = Q_final %*% temp
+for (i in 1:36) {
+  temp = temp %*% Q_final
   image(1:ncol(temp),
         1:nrow(temp), t(temp),
         col = hcl.colors(3000, palette = "viridis", alpha = NULL, rev = FALSE, fixup = TRUE),
@@ -250,6 +250,12 @@ for (i in 1:1) {
   axis(2, 1:nrow(temp), rownames(temp))
 }
 
+errors = c()
+for (i in 1:44) {
+  errors = c(errors, max(temp[,i]) - min(temp[,i]))
+}
+max(errors)
+  
 results = c()
 for (i in 1:44) {
   results = c(results, mean(temp[,i]))
@@ -268,23 +274,50 @@ ggplot(d, aes(square, p)) +
   ggtitle('Probability p Of Landing On Each Square As # Of Turns Converges To Infinity') +
   theme(plot.title = element_text(hjust = 0.5))
 
-color_properties = data.frame(
-  brown = c(2,4),
-  light_blue = c(7,9,10),
-  pink = c(12,14,15),
-  orange = c(17,19,20),
-  red = c(22,24,25),
-  yellow = c(27,28,30),
-  green = c(32,33,35),
-  blue = c(38,40)
-)
 
 library(ggplot2)
-ggplot(d, aes(square, p)) + 
-  geom_bar(stat = 'identity', aes(fill = p>.025), position = 'dodge', col = 'transparent') + 
+
+type = c(
+  "Go", "Brown", "Community Chest", "Brown", "Tax", "Railroads", "Cyan", "Chance Card", "Cyan", "Cyan",
+  "Just Passing", "Pink", "Utilities", "Pink", "Pink", "Railroads", "Orange", "Community Chest", "Orange", "Orange",
+  "Free Parking", "Red", "Chance Card", "Red", "Red", "Railroads", "Yellow", "Yellow", "Utilities", "Yellow",
+  "Jail", "Green", "Green", "Community Chest", "Green", "Railroads", "Chance Card", "Blue", "Tax", "Blue",
+  "Jail-0", "Jail-1", "Jail-2", "Jail-3"
+)
+cbind(d, type)
+ggplot(d, aes(square, p, fill = type)) + 
+  #geom_bar(stat = 'identity', aes(fill = square < 10 & square > 5), position = 'dodge', col = 'transparent') + 
   #theme_bw() + 
-  scale_fill_discrete(guide = 'none') + 
-  labs(x = 'square', y = 'p')
+  #scale_fill_discrete(guide = 'none') + 
+  geom_bar(stat = "identity", width = .93) +
+  scale_fill_manual("Properties",values = c(
+    "Go" = "gray70",
+    "Community Chest" = "gray70",
+    "Chance Card" = "gray70",
+    "Tax" = "gray70",
+    "Just Passing" = "gray70",
+    "Utilities" = "gray70",
+    "Free Parking" = "gray70",
+    "Jail" = "gray70",
+    "Jail-0" = "gray70",
+    "Jail-1" = "gray70",
+    "Jail-2" = "gray70",
+    "Jail-3" = "gray70",
+    "Railroads" = "black",
+    "Brown" = "brown",
+    "Cyan" = "lightskyblue",
+    "Pink" = "hotpink",
+    "Orange" = "orange",
+    "Red" = "red",
+    "Yellow" = "yellow",
+    "Green" = "green3",
+    "Blue" = "blue"
+
+    
+    ),
+    guide = 'none') +
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  labs(title = "Probability p Of Landing On Each Square As # Of Turns Converges To Infinity", x = 'square', y = 'p')
 
 # temp = diag(44)
 # for (i in 1:50) {
